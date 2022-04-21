@@ -1,4 +1,6 @@
 const form = document.querySelector('.search-form');
+const postSection = document.querySelector('.container');
+const postTemplate = document.querySelector('#template');
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -13,6 +15,36 @@ form.addEventListener('submit', async (event) => {
   })
     .then((res) => res.json())
     .catch((err) => console.error(err));
+
+  let num = 0;
+
+  response.results.forEach((element) => {
+    const clone = postTemplate.content.cloneNode(true);
+    const dataObj = response.results[num];
+    const postImg = clone.querySelector('.post__img');
+    const postCap = clone.querySelector('.post__user');
+    const postDes = clone.querySelector('.post__desc');
+
+    postImg.src = dataObj.urls.small;
+
+    const author = dataObj.user.name;
+
+    let caption = dataObj.description;
+
+    if (caption !== null) {
+      if (caption.length > 100) {
+        const newString = caption.substr(0, 99);
+        caption = `${newString}...`;
+      }
+    }
+
+    postCap.innerText = `by ${author}`;
+    postDes.innerText = caption;
+
+    postSection.appendChild(clone);
+
+    num++;
+  });
 
   /*
   some sample code
